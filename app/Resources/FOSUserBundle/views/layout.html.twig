@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome to FileManager{% endblock %}</title>
+        {% block stylesheets %}
+            {% if app.environment == 'dev' %}
+                <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+                <link rel="stylesheet" href="{{asset('css/navbar.css')}}" />
+            {% else %}
+                <link rel="stylesheet" href="{{ asset('/web/css/bootstrap.css') }}">
+                <link rel="stylesheet" href="{{asset('/web/css/navbar.css')}}" />
+            {% endif %}
+        {% endblock %}
+		
+    </head>
+    <body>
+		<section class="container">
+			  <ul class="nav" width="100%">
+				<li style="border-top: unset;color:unset;">					
+					<a href="/">						
+											
+						{% if app.environment == 'dev' %}
+							<img src="{{ asset('images/FMlogo.png') }}" width="40px"/>
+						{% else %}
+							<img src="{{ asset('/web/images/FMlogo.png') }}" width="40px"/>
+						{% endif %}
+						
+					</a>
+                </li>
+              </ul>
+        </section>
+
+		<div class="container">
+			{% block body %}
+				<div style="color:red">
+					{% if app.request.hasPreviousSession %}
+						{% for type, messages in app.session.flashbag.all() %}
+							{% for message in messages %}
+								<div class="flash-{{ type }}">
+									{{ message }}
+								</div>
+							{% endfor %}
+						{% endfor %}
+					{% endif %}
+				</div>
+			{% endblock %}
+		</div>
+            
+
+        <div>
+            {% block fos_user_content %}
+            {% endblock fos_user_content %}
+        </div>
+    </body>
+</html>

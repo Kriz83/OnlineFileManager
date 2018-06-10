@@ -1,0 +1,372 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if is_granted('ROLE_USER') %}
+        <div class="container">
+            
+            <div class="row">  
+
+                <div class="col-xs-12 col-md-12">
+                    
+                    <div class="col-xs-2 col-md-3">
+                        <div class="leftMenu">
+                            <div>
+                                <div style="display: inline-block">
+                                        <a href="/addDocuments/0" style="color:rgb(13, 13, 29); font-size:15px"  title="Przechodzi do głównego folderu">
+                                            {% if app.environment == 'dev' %}
+                                                <img src="{{ asset('images/folder_back.png') }}" width="35px"/> Główny katalog<br>
+                                            {% else %}
+                                                <img src="{{ asset('/web/images/folder_back.png') }}" width="35px"/> Główny katalog<br>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+            
+                                    <div style="display: inline-block">
+                                        <a href="/addDocuments/{{parentData}}" style="color:rgb(13, 13, 29); font-size:15px"  title="Przechodzi w hierarchi katalogów poziom wyżej">
+                                            {% if app.environment == 'dev' %}
+                                                <img src="{{ asset('images/folder_back2.png') }}" width="35px"/> Wstecz<br>
+                                            {% else %}
+                                                <img src="{{ asset('/web/images/folder_back2.png') }}" width="35px"/> Wstecz<br>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div style="clear: left;"></div>
+                            </div>
+                            
+                            <div class="pageTitle" style="margin-top: 10px; margin-bottom: 10px;">
+                                Lista folderów
+                            </div>
+
+                            {# get list of catalogues in current folder #}
+                            {% for catalogueName in catalogueList %}
+                                {% set catName = catalogueName['name'] %}
+                                {% set catId = catalogueName['id'] %}
+                                {% set subcatalogueExist = null %}
+
+                                {# set subcatalogue open when subcatalogue exist #}
+                                {% for subcatalogue in subcatalogueList %}
+                                    {% if subcatalogue['parent'] is defined %}
+                                        {% if subcatalogue['parent'] == catId %}
+                                            {% set subcatalogueExist = 1 %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if app.environment == 'dev' %}
+                                    <div style="display: inline-block">
+                                        {% if subcatalogueExist != null %}
+                                            
+                                            <input type="image" src="{{ asset('images/folder_closed_with_subfolders.png') }}" alt="closed" 
+                                                id="subcatalogueClosed{{catId}}" class="subDataClosed" value="{{catId}}" width="35px"
+                                                title="Otwiera listę podkatalogów"
+                                            >
+
+                                            <input type="image" src="{{ asset('images/folder_opened.png') }}" alt="opened" 
+                                                id="subcatalogueOpen{{catId}}" class="subDataOpen" value="{{catId}}" width="35px"
+                                                title="Zamyka listę podkatalogów"
+                                            >
+
+                                        {% else %}                                        
+                                            <input type="image" src="{{ asset('images/folder_closed.png') }}" 
+                                                alt="closed" width="35px" style="vertical-align: middle;"
+                                            >
+                                        {% endif %}
+                                        <span style="vertical-align: middle;">
+                                            <a href="/addDocuments/{{catId}}" style="color:rgb(13, 13, 29); font-size:15px; margin: 5px;">                                     
+                                                {{catName}}
+                                            </a>  
+                                        </span>                                  
+                                        <br><br>
+                                    </div>
+                                    <div style="clear: left;"></div>
+                                {% else %}                                
+                                    <div style="display: inline-block">
+                                        {% if subcatalogueExist != null %}
+                                            <input type="image" src="{{ asset('/web/images/folder_closed_with_subfolders.png') }}" alt="closed" 
+                                                id="subcatalogueClosed{{catId}}" class="subDataClosed" value="{{catId}}" width="35px"
+                                                title="Otwiera listę podkatalogów"
+                                            >
+
+                                            <input type="image" src="{{ asset('/web/images/folder_opened.png') }}" alt="opened" 
+                                                id="subcatalogueOpen{{catId}}" class="subDataOpen" value="{{catId}}" width="35px"
+                                                title="Zamyka listę podkatalogów"
+                                            >
+                                        {% else %}
+                                            <input type="image" src="{{ asset('/web/images/folder_closed.png') }}" 
+                                                alt="closed" width="35px" style="vertical-align: middle;"
+                                            >
+                                        {% endif %}
+
+                                        <span style="vertical-align: middle;">
+                                            <a href="/addDocuments/{{catId}}" style="color:rgb(13, 13, 29); font-size:15px; margin: 5px;">                                     
+                                                {{catName}}
+                                            </a>   
+                                        </span>                                 
+                                        <br><br>
+                                    </div>
+                                    <div style="clear: left;"></div>
+                                {% endif %}
+                            
+                                <div id="sub{{catId}}" class="subcatalogue">
+                                    {# get subcatalogs for catalog list #}
+                                    {% for subcatalogue in subcatalogueList %}
+                                        {% if subcatalogue['parent'] is defined %}
+                                            {% if subcatalogue['parent'] == catId %}
+                                                {% set subcatName = subcatalogue['name'] %}
+                                                {% set subcatId = subcatalogue['id'] %}
+                                                <a href="/addDocuments/{{subcatId}}" style="color:rgb(13, 13, 29); font-size:14px">
+                                                    {% if app.environment == 'dev' %}
+                                                        <img src="{{ asset('images/folder_opened_with_subfolders.png') }}" 
+                                                            width="60px" style="vertical-align: middle;"
+                                                        />
+                                                        {{subcatName}}
+                                                        <br><br>
+                                                    {% else %}
+                                                        <img src="{{ asset('/web/images/folder_opened_with_subfolders.png') }}" 
+                                                            width="60px" style="vertical-align: middle;"
+                                                        />
+                                                        {{subcatName}}
+                                                        <br><br>
+                                                    {% endif %}
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                       </div>
+                    </div>
+
+                    <div class="col-xs-8 col-md-9">
+                        <div class="bodyContainer">
+                            <div style="margin-left: 15px;">
+                                <div class="currentPath">
+                                    <a style="color: darkgreen;" href="/addDocuments/0">
+                                        ..\
+                                    </a>
+                                </div>
+                                {% set name = null %}
+                                {% for id,name in pathNameShow %}                                
+                                    {% if name != '' %}
+                                        <span style="color: darkgreen; font-weight:400; font-size: 20px;">\</span>
+                                        <div class="currentPath">
+                                            <a style="color: darkgreen;" href="/addDocuments/{{id}}">
+                                                {{name}}
+                                            </a>                                            
+                                        </div>                                    
+                                    {% endif %}
+                                {%endfor  %}
+
+                                {% if currentCatalogueName != '(GŁÓWNY) ..\\'  %}
+
+                                    <div>
+                                        <br>
+                                        <a href="/editCatalogue/{{catalogueId}}">
+                                            <button class="btn btn-primary" style="font-size: 18px;" title="Zmienia nazwę katalogu">
+                                                Edytuj katalog - <span style="color:rgb(241, 214, 125)">{{currentCatalogueName}}</span>
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                    
+                                {% endif %}
+                                
+                                <div style="clear: left;"></div>
+                            </div>
+
+                            <br>
+                            
+                            <div>
+                                {% for message in app.flashes('error') %}
+                                    <div class="alert alert-warning">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                {% for error in errors %}                                        
+                                    <div class="alert alert-warning">{{ error.message }}</div>
+                                {% endfor %}
+                            </div>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="col-xs-11 col-md-12">
+                                    <div class="pageTitle">
+                                        Dodaj nowy plik:
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-11 col-md-12">
+
+                                    {{ form_start(form) }} 
+                                        <div class="col-xs-1 col-md-2">   
+                                            <br>
+                                            {{ form_label(form.newFile) }}
+                                            <br><br> 
+                                            {{ form_widget(form.newFile) }}
+                                        </div>
+
+                                        <div class="col-xs-1 col-md-2"></div>
+
+                                        <div class="col-xs-1 col-md-2"> 
+                                            <br>       
+                                            {{ form_label(form.description) }}
+                                            {{ form_widget(form.description) }}
+                                        </div>
+
+                                        <div class="col-xs-1 col-md-2"></div>
+
+                                        <div class="col-xs-1 col-md-2">
+                                            <br><br><br><br>
+                                            <button type="submit" class="btn btn-primary" title="Dodaje nowy plik do bazy">
+                                                    Dodaj  <span class="glyphicon glyphicon-file"></span>
+                                            </button>
+                                        </div>
+                                    {{ form_end(form) }}
+                                </div>
+                    
+                                <div class="col-xs-11 col-md-12">
+                                    <div class="pageTitle">
+                                        Dodaj nowy katalog:
+                                    </div>
+                                </div>
+
+
+                                <div class="col-xs-11 col-md-12">
+
+                                    {{ form_start(form2) }} 
+                                        <div class="col-xs-1 col-md-2">   
+                                            <br>
+                                            {{ form_label(form2.name) }}
+                                            <br>
+                                            {{ form_widget(form2.name) }}
+                                        </div>
+
+                                        <div class="col-xs-1 col-md-2"></div>
+
+                                        <div class="col-xs-1 col-md-2" title="Wybór grup użytkowników posiadających dostęp do katalogu"> 
+                                            <br>       
+                                            {{ form_label(form2.groupName) }}
+                                            {{ form_widget(form2.groupName) }}
+                                        </div>
+
+                                        <div class="col-xs-1 col-md-2"></div>
+
+                                        <div class="col-xs-1 col-md-2">
+                                            <br><br><br>
+                                            <button type="submit" class="btn btn-primary" title="Dodaje nowy katalog do bazy">
+                                                Dodaj <span class="glyphicon glyphicon-folder-open"></span>
+                                            </button>
+                                        </div>
+
+                                    {{ form_end(form2) }}
+                                    </div>
+                                
+                            {% endif %}
+                            
+                            <div class="col-xs-11 col-md-12">
+                                <br>
+                                <div class="pageTitle">
+                                    Lista dokumentów w katalogu <span style="color:rgb(85, 204, 243)"><u>{{currentCatalogueName}}</u></span> :
+                                </div>
+                                <br>
+
+                            </div>
+
+                            <div class="col-xs-11 col-md-12"> 
+                                <table class="table table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Nazwa pliku
+                                            </th>
+                                            <th width="60%">
+                                                Opis
+                                            </th>
+                                            {% if is_granted('ROLE_ADMIN') %}
+                                                <th width="10%">
+                                                    Edytuj
+                                                </th>
+                                            {% endif %}
+                                            {% if is_granted('ROLE_ADMIN') %}
+                                                <th width="12%">
+                                                    Usuń
+                                                </th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                                <div id="table-wrapper">
+                                    <div id="table-scroll">
+
+                                        <table class="table table-bordered " style="max-height:80px; overflow: scroll;">
+                                            {% if files is defined %}
+
+                                                {% for file in files %}
+
+                                                    {% set fileName = file['fileName'] %}
+                                                    {% set fileId = file['id'] %}
+                                                    {% set catalogueId = file['catalogueId'] %}
+                                                    {% if catalogueId == null %}
+                                                        {% set catalogueId = 0 %}
+                                                    {% endif %}
+                                                    {% set extension = file['extension'] %}
+                                                    {% set description = file['description'] %}
+
+                                                    <tr>
+                                                        <td style="text-align: left;">
+                                                            <a href="/download/{{catalogueId}}/{{fileName}}.{{extension}}" style="color:rgb(13, 13, 29); font-size:14px">
+                                                                {% if app.environment == 'dev' %}
+                                                                <img src="/images/{{extension}}.png" onerror="this.src='{{ asset('images/uknownFile.png') }}'" width="30px"/>
+                                                                {% else %}
+                                                                <img src="/web/images/{{extension}}.png" onerror="this.src='{{ asset('images/uknownFile.png') }}'" width="30px"/>
+                                                                {% endif %}                                                        
+                                                                {{fileName}}
+                                                            </a>
+                                                        </td>
+                                                        <td width="60%" style="text-align: left;">
+                                                            {{description}}
+                                                        </td>
+                                                        {% if is_granted('ROLE_ADMIN') %}
+                                                            <td width="10%" style="vertical-align: middle;">
+                                                                <a href="/editFile/{{fileId}}" style="color:black; font-size: 25px;">
+                                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                                </a>
+                                                            </td>
+                                                            <td width="10%" style="vertical-align: middle;">
+                                                                <a href="/removeFile/{{catalogueId}}/{{fileName}}/{{extension}}" style="color:black;">
+                                                                    <button onclick="return confirm('Czy napewno chcesz usunąć plik?');">
+                                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                                    </button>
+                                                                </a>
+                                                            </td>
+                                                        {% endif %} 
+                                                    </tr>
+                                                {% endfor %}  
+
+                                            {% endif %}
+                                            
+                                        </table>  
+                                    </div>
+                                </div>
+                            </div>                               
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        {% if app.environment == 'dev' %}
+			<script src="{{ asset('js/subfoldersShow.js') }}"></script>
+		{% else %}
+			<script src="{{ asset('/web/js/subfoldersShow.js') }}"></script>
+		{% endif %}
+        
+    {% else %}
+        <script>window.location.href = "/login"</script>
+    {% endif %}
+
+{% endblock %}

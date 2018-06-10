@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<div class="container">
+		{% if message is defined %}
+			<div class="alert alert-warning">
+				{{message}}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	<div class="container">
+		{% if success is defined %}
+			<div class="alert alert-success">
+				{{success}}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	
+	{% if is_granted('ROLE_USER') %}
+        <div class="container">
+           
+            <div class="pageTitle" style="margin-top: 10px; margin-bottom: 10px;">
+                Główne foldery
+            </div>
+
+            <div style="display: flex;">
+                {# get list of catalogues in current folder #}
+                
+                {% set catNumber = 0 %}
+
+                {% for catalogueName in catalogueList %}
+                    
+                    {% set catName = catalogueName['name'] %}
+                    {% set catId = catalogueName['id'] %}                    
+                    {% set catNumber = catNumber + 1 %}
+
+                    {% if catNumber % 5 == 0 %}
+                        </div>
+                        <div style="display: flex;">                        
+                    {% else %}
+                        <div style="width: 27%; height: 126px; text-align: center;">
+                            <a href="/addDocuments/{{catId}}" style="color:rgb(0, 64, 107); font-size:15px; margin: 5px;">                                     
+                                {% if app.environment == 'dev' %}
+                                    <input type="image" src="{{ asset('images/folder_closed_lg.png') }}" 
+                                        alt="closed" width="81px" style="vertical-align: middle;"
+                                    >
+                                {% else %}
+                                    <input type="image" src="{{ asset('/web/images/folder_closed_lg.png') }}" 
+                                        alt="closed" width="81px" style="vertical-align: middle;"
+                                    >
+                                {% endif %}                                
+                                <br>
+                                {{catName}}
+                            </a>
+                        </div>                      
+                    {% endif %} 
+                {% endfor %}
+            </div>            
+        </div>
+	{% endif %}
+{% endblock %}

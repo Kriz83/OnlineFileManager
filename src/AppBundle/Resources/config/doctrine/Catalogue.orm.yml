@@ -1,0 +1,34 @@
+AppBundle\Entity\Catalogue:
+    type: entity
+    oneToMany:
+        document:
+            targetEntity: Document
+            mappedBy: catalogs
+            joinColumn:
+                name: id
+                referencedColumnName: catalogs
+    table: null
+    repositoryClass: AppBundle\Repository\CatalogueRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        parent:
+            type: integer
+            nullable: true
+        groupName:
+            type: simple_array
+            nullable: true
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+            nullable: TRUE
+    lifecycleCallbacks: {  }

@@ -1,0 +1,23 @@
+AppBundle\Entity\GroupName:
+    type: entity
+    oneToMany:
+        userData:
+            targetEntity: UserData
+            mappedBy: groupName
+            joinColumn:
+                name: id
+                referencedColumnName: groupName      
+    table: null
+    repositoryClass: AppBundle\Repository\GroupNameRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '100'
+            unique: true
+    lifecycleCallbacks: {  }

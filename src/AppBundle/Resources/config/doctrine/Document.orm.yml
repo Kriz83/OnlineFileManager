@@ -1,0 +1,35 @@
+AppBundle\Entity\Document:
+    type: entity
+    manyToOne:
+        catalogs:
+            targetEntity: Catalogue
+            inversedBy: document
+            joinColumn:
+                name: catalogueName
+                referencedColumnName: id
+    table: null
+    repositoryClass: AppBundle\Repository\DocumentRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        fileName:
+            type: string
+            length: 255
+        description:
+            type: text
+            nullable: true
+        fileExtension:
+            type: string
+            length: 10
+            nullable: true
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+            nullable: TRUE
+    lifecycleCallbacks: {  }

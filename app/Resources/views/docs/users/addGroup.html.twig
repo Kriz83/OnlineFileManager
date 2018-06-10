@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% if  is_granted('ROLE_ADMIN') %}
+
+	
+    {% for message in app.flashes('error') %}
+    <div class="alert alert-warning">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+	<div>
+        {% if error is defined %}
+            <div class="alert alert-warning">
+                {{error}}
+            </div>	
+        {% else %}
+            <div class="pageTitle">
+                <center><h1>Dodaj grupę</h1></center>
+            </div>
+            <hr>
+        {% endif %}
+    </div>
+    <div>
+        <div>
+				
+            {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                <div class="col-xs-11 col-md-12">
+                    <div class="col-xs-3 col-md-3">
+                        {{ form_label(form.name) }}<br/>
+                        {{ form_errors(form.name) }}
+                        {{ form_widget(form.name) }}
+                    </div>	
+                    <div class="col-xs-1 col-md-1">
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        <br/>
+                        <button type="submit" class="btn btn-primary"><h4>Dodaj do bazy : <span class="glyphicon glyphicon-floppy-open"></span></h4></button>
+                    </div>			
+                </div>	
+            {{ form_end(form) }}	
+                
+        </div>
+
+        <div class="col-xs-11 col-md-12">
+
+            <table class="table" width="100%">
+                <tr>
+                    <th>ID</th>
+                    <th>NAZWA GRUPY</th>
+                    <th>EDYCJA</th>
+                </tr>
+                {% for detail in groupsData %}
+                    <tr>
+                        <td>{{detail.id}}</td>
+                        <td>{{detail.name}}</td>
+                        <td>
+                            <div class="form-group">
+                                <a href="/editGroup/{{detail.id}}">
+                                    {% if app.environment == 'dev' %}
+                                        <img src="{{ asset('images/edit.png') }}" width="30px"/>
+                                    {% else %}
+                                        <img src="{{ asset('/web/images/edit.png') }}" width="30px"/>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            
+        </div>
+			
+    </div>
+<hr>
+ 	{% else %}
+		<center><h1><label style="color:red;">
+		Nie masz prawa do oglądania tej strony - zaloguj się!<br/>
+		Zapraszamy ponownie :)
+		</h1></label></center>
+		<script>window.location.href = "/"</script>
+	{% endif %}          
+{% endblock %}

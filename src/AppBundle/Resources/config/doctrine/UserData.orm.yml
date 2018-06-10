@@ -1,0 +1,32 @@
+AppBundle\Entity\UserData:
+    type: entity
+    oneToOne:
+      userId:
+        targetEntity: User
+        joinColumn:
+          name: user_id
+          referencedColumnName: id
+          onDelete: CASCADE
+    manyToOne:
+        groupName:
+            targetEntity: GroupName
+            inversedBy: userData
+            joinColumn:
+                name: groupData
+                referencedColumnName: id
+    table: null
+    repositoryClass: AppBundle\Repository\UserDataRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '100'
+        surname:
+            type: string
+            length: '100'
+    lifecycleCallbacks: {  }

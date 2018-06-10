@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Baza dokumentów{% endblock %}</title>
+        {% block stylesheets %}            
+			{% if app.environment == 'dev' %}
+                <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+                <link rel="stylesheet" href="{{ asset('css/documents.css') }}">
+                <link rel="stylesheet" href="{{asset('css/navbar.css')}}" />
+            {% else %}
+                <link rel="stylesheet" href="{{ asset('/web/css/bootstrap.css') }}">
+                <link rel="stylesheet" href="{{ asset('/web/css/documents.css') }}">
+                <link rel="stylesheet" href="{{asset('/web/css/navbar.css')}}" />
+            {% endif %}
+        {% endblock %}			
+        {% if app.environment == 'dev' %}
+            <link rel="icon" type="image/x-icon" href="{{ asset('images/FMlogo.png') }}" />
+        {% else %}
+            <link rel="icon" type="image/x-icon" href="{{ asset('/web/images/FMlogo.png') }}" />
+        {% endif %}
+        
+		 {% block javascripts %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>		
+            {% if app.environment == 'dev' %}
+                <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+            {% else %}
+                <script src="{{ asset('/web/js/bootstrap.min.js') }}"></script>
+            {% endif %}
+		{% endblock %}
+    </head>
+    <body class="scrollable-block">
+        <div class="container">
+            <section class="container">
+                <nav>
+                <ul class="nav">
+                    <li style="border-top: unset;color:unset;">
+                        <a href="/">						
+                            {% if app.environment == 'dev' %}
+                                <img src="{{ asset('images/FMlogo.png') }}" width="40px"/>
+                            {% else %}
+                                <img src="{{ asset('/web/images/FMlogo.png') }}" width="40px"/>
+                            {% endif %}
+                            
+                        </a>
+                    </li>
+                    
+                        
+                    {% if is_granted('ROLE_USER') %}
+                        <li style="border-top: unset;color:unset;">
+                            <div style="float:left; padding-left:5px; vertical-align:middle;margin-right:8px;">	
+                                <br>	
+                                        
+                                <form method="post" target="" action="/searchedDocuments" id="targetChange">
+                                    <input style="color:darkblue;height:32px;" id="search" class="search1" type="text" name="search" pattern=".{3,}" title="Wyszukuje pliki w bazie - Wpisz przynajmniej 3 znaki" onkeypress="changeformtarget();"/>					
+                            </div>
+                            <div style="float:left; vertical-align:middle; margin-right:11px;">		
+                                <br>			
+                                    <button id="hiddenButton" type="submit" class="btn btn-menu btn-lg gradient" style="max-height:30px;margin-top:5px; padding-top:1px; padding-bottom:5px; padding-left:5px; padding-right:5px;" onclick="changeformtarget();">
+                                    <span style=" font-size:9px;">SZUKAJ</span>
+                                    </button>	
+                                    <button id="blank" type="submit" class="btn btn-menu btn-lg gradient"  style="max-height:30px;margin-top:5px; padding-top:1px; padding-bottom:5px; padding-left:5px; padding-right:5px;" onclick="changeformtargetBlank();">
+                                    <span style=" font-size:9px;">WYSZUKAJ W NOWEJ KARCIE</span>
+                                    </button>
+                                </form>				
+                            
+                            </div>
+                        </li>   
+                        {% if is_granted('ROLE_ADMIN') %}                 
+                            <li>
+                                <br>
+                                <div class="dropdown">
+                                <button onclick="myFunction()" class="dropbtn">DODAJ</button>
+                                    <div id="myDropdown" class="dropdown-content">
+                                        <a href="/addDocuments" title="Przeglądanie plików w bazie, dodanie nowych plików i folderów">DOKUMENTY</a>
+                                        <a href="/showUsers" title="Dodanie, edycja użytkowników">UŻYTKOWNIKÓW</a>
+                                        <a href="/addGroup" title="Dodanie i edycja grup użytkowników">GRUPY</a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% elseif is_granted('ROLE_USER') %}  
+                            <li>
+                                <a href="/addDocuments" style="color: #00642d">DOKUMENTY</a>
+                            </li>
+                        {% endif %}  
+                        <li style="float:right">
+                            <a href="{{ path('fos_user_security_logout') }}">WYLOGUJ SIĘ</a>
+                        </li>                  
+                        <li style="float:right">
+                            <a href="{{ path('fos_user_change_password') }}">ZMIEŃ HASŁO</a>
+                        </li>
+                    
+                    {% else %}	
+                        <script>window.location.href = "{{ path('fos_user_security_login') }}"</script>
+                        <li style="float:right">
+                            <a href="{{ path('fos_user_security_login') }}">ZALOGUJ SIĘ</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                </nav>
+            </section>
+		
+			{% if is_granted('ROLE_USER') %}
+                <div class="row" style="float:left;clear:left;width:100%;">
+                    <br>
+                    {% block body %}					
+                                        
+                    {% endblock %}	                            
+                </div>	
+            {% endif %}
+        </div>
+        
+
+        {% if app.environment == 'dev' %}
+			<script src="{{ asset('js/base.js') }}"></script>
+		{% else %}
+			<script src="{{ asset('/web/js/base.js') }}"></script>
+		{% endif %}
+		
+    </body>
+</html>

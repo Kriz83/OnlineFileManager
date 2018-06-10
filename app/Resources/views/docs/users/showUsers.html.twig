@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% if  is_granted('ROLE_ADMIN') %}
+    
+	<div>
+		{% if success is defined %}
+			<div class="alert alert-success">
+				{{success}}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	<div>
+		{% if app.request.query.get("success") is defined and app.request.query.get("success") != '' %}
+			<div class="alert alert-success">
+				{{ app.request.query.get("success") }}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	<div>
+		<div class="pageTitle">
+			<h1>
+                <center>
+                    LISTA UŻYTKOWNIKÓW
+                </center>
+            </h1>
+		</div>
+		
+        <div class="col-xs-11 col-md-12">
+            <br>
+            <center>
+                <a href="addUser"><button type="button" class="btn btn-primary btn-lg gradient" style="min-width:350px"><h4>DODAJ NOWY WPIS</h4></button></a>
+            </center>
+            <br>
+        </div>
+		
+		<table class="table">
+			<tr>
+				<th>ID</th>
+				<th>NAZWISKO</th>
+				<th>IMIĘ</th>
+				<th>ADRES E-MAIL</th>
+				<th>GRUPA</th>
+                <th>KONTO AKTYWNE</th>
+                <th>EDYCJA</th>
+			</tr>
+            {% for detail in userData %}
+                {# set diffrent color depend on if account is enabled or not #}
+                {% if detail.enabled == 1 %}	
+                <tr style="color:darkgreen">
+                {% else %}
+                <tr style="color:red">
+                {% endif %}
+                    <td>{{detail.id}}</td>
+                    <td>{{detail.surname}}</td>
+                    <td>{{detail.name}}</td>
+                    <td>{{detail.email}}</td>
+                    <td>{{detail.groupData}}</td>
+                    <td>
+                        {% if detail.enabled == true%}
+                            <a href="/disableUser/{{detail.id}}"
+                                <button class="btn btn-success">TAK</button>
+                            </a>
+                        {% else %}
+                            <a href="/enableUser/{{detail.id}}"
+                                <button class="btn btn-danger">NIE</button>
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <a href="/editUser/{{detail.id}}">                                					
+                                {% if app.environment == 'dev' %}
+                                    <img src="{{ asset('images/edit.png') }}" width="30px"/>
+                                {% else %}
+                                    <img src="{{ asset('/web/images/edit.png') }}" width="30px"/>
+                                {% endif %}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+			{% endfor %}
+        </table>
+	</div>
+
+			
+	{% else %}
+		<center><h1><label style="color:red;">
+		Nie masz prawa do oglądania tej strony - zaloguj się!<br/>
+		Zapraszamy ponownie :)
+		</h1></label></center>
+		<script>window.location.href = "/"</script>
+	{% endif %}
+	
+{% endblock %}

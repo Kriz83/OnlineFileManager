@@ -1,0 +1,11 @@
+AppBundle\Entity\FileToUpload:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\FileToUploadRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    lifecycleCallbacks: {  }

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<div class="container">
+		{% if message is defined %}
+			<div class="alert alert-warning">
+				{{message}}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	<div class="container">
+		{% if success is defined %}
+			<div class="alert alert-success">
+				{{success}}
+			</div>	
+		{% else %}
+			<div>
+			</div>
+		{% endif %}
+	</div>
+	
+	{% if is_granted('ROLE_USER') %}
+		
+		<script>window.location.href = "/navigate"</script>
+
+	{% endif %}
+
+
+{% endblock %}

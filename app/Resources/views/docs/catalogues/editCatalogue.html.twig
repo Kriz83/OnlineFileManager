@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if is_granted('ROLE_USER') %}
+        <div class="container">
+            
+            <div class="row">  
+
+                <div class="col-xs-12 col-md-12">
+
+                    
+                    <div>
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-warning">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                        {% for error in errors %}                                        
+                            <div class="alert alert-warning">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-xs-11 col-md-12">
+                        <div class="pageTitle">
+                            Zmień nazwę lub grupę docelową dla katalogu:
+                        </div>
+                    </div>
+
+                    <div class="col-xs-11 col-md-12">
+
+                        {{ form_start(form) }} 
+                            <div class="col-xs-2 col-md-4">   
+                                <br>
+                                {{ form_label(form.name) }}
+                                <br>
+                                {{ form_widget(form.name) }}
+                                <br>
+                                <span style="color:red;">
+                                    {{ form_errors(form.name) }}
+                                </span>                                
+                            </div>
+
+                            <div class="col-xs-1 col-md-1"></div>
+
+                            <div class="col-xs-2 col-md-3"> 
+                                <br>       
+                                {{ form_label(form.groupName) }}
+                                <br>  
+                                {{ form_widget(form.groupName) }}
+                                <br>
+                                <span style="color:red;">
+                                    {{ form_errors(form.groupName) }}
+                                </span>
+                            </div>
+
+                            <div class="col-xs-1 col-md-1"></div>
+
+                            <div class="col-xs-1 col-md-2">
+                                <br><br><br>
+                                <button type="submit" class="btn btn-primary" title="Zmień dane">
+                                    Zmień <span class="glyphicon glyphicon-file"></span>
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>                    
+
+                </div>
+            </div>
+
+        </div>
+
+        {% if app.environment == 'dev' %}
+			<script src="{{ asset('js/subfoldersShow.js') }}"></script>
+		{% else %}
+			<script src="{{ asset('/web/js/subfoldersShow.js') }}"></script>
+		{% endif %}
+        
+    {% else %}
+        <script>window.location.href = "/login"</script>
+    {% endif %}
+
+{% endblock %}
